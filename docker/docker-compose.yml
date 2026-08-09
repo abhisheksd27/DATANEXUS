@@ -1,0 +1,94 @@
+version: '3.8'
+
+networks:
+  datanexus-net:
+    driver: bridge
+
+services:
+  # 1. MySQL (Orders Service OLTP DB)
+  mysql:
+    image: mysql:8.0
+    container_name: datanexus-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: orders_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - datanexus-net
+
+  # 2. PostgreSQL (User & Inventory Service OLTP DB)
+  postgres:
+    image: postgres:15
+    container_name: datanexus-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: users_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres/postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+    networks:
+      - datanexus-net
+
+  # 3. Zookeeper (Kafka Coordination Engine)
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: datanexus-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - datanexus-net
+
+  # 4. Apache Kafka (Message Broker & Event Streaming Hub)
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: datanexus-kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - datanexus-net
+
+  # 5. Apache Spark Master (Cluster Manager & Web UI)
+  spark-master:
+    image: bitnami/spark:3.5.0
+    container_name: datanexus-spark-master
+    environment:
+      - SPARK_MODE=master
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+    ports:
+      - "8080:8080"
+      - "7077:7077"
+    networks:
+      - datanexus-net
+
+  # 6. Apache Spark Worker (Compute Execution Engine)
+  spark-worker:
+    image: bitnami/spark:3.5.0
+    container_name: datanexus-spark-worker
+    depends_on:
+      - spark-master
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+      - SPARK_WORKER_MEMORY=2G
+      - SPARK_WORKER_CORES=2
+    networks:
+      - datanexus-net
