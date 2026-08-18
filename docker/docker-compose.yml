@@ -1,10 +1,9 @@
-version: '3.8'
-
 networks:
   datanexus-net:
     driver: bridge
 
 services:
+
   # 1. MySQL (Orders Service OLTP DB)
   mysql:
     image: mysql:8.0
@@ -47,7 +46,7 @@ services:
     networks:
       - datanexus-net
 
-  # 4. Apache Kafka (Message Broker & Event Streaming Hub)
+  # 4. Apache Kafka (Event Streaming Broker)
   kafka:
     image: confluentinc/cp-kafka:7.5.0
     container_name: datanexus-kafka
@@ -65,30 +64,26 @@ services:
     networks:
       - datanexus-net
 
-  # 5. Apache Spark Master (Cluster Manager & Web UI)
+  # 5. Apache Spark Master
   spark-master:
-    image: bitnami/spark:3.5.0
+    image: apache/spark:3.5.0
     container_name: datanexus-spark-master
-    environment:
-      - SPARK_MODE=master
-      - SPARK_RPC_AUTHENTICATION_ENABLED=no
-      - SPARK_RPC_ENCRYPTION_ENABLED=no
+    command: /opt/spark/bin/spark-class org.apache.spark.deploy.master.Master
     ports:
       - "8080:8080"
       - "7077:7077"
     networks:
       - datanexus-net
 
-  # 6. Apache Spark Worker (Compute Execution Engine)
+  # 6. Apache Spark Worker
   spark-worker:
-    image: bitnami/spark:3.5.0
+    image: apache/spark:3.5.0
     container_name: datanexus-spark-worker
     depends_on:
       - spark-master
+    command: /opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
     environment:
-      - SPARK_MODE=worker
-      - SPARK_MASTER_URL=spark://spark-master:7077
-      - SPARK_WORKER_MEMORY=2G
       - SPARK_WORKER_CORES=2
+      - SPARK_WORKER_MEMORY=2g
     networks:
       - datanexus-net

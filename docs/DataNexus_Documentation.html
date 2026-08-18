@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DataNexus — Full Project Documentation</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 14px; color: #1a1a2e; background: #fff; line-height: 1.7; }
+    .cover { background: linear-gradient(135deg, #0f3460 0%, #16213e 60%, #1a1a2e 100%); color: #fff; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 60px 40px; page-break-after: always; }
+    .cover h1 { font-size: 52px; font-weight: 900; letter-spacing: 2px; margin-bottom: 16px; color: #e94560; }
+    .cover h2 { font-size: 22px; font-weight: 400; color: #a8dadc; margin-bottom: 40px; }
+    .cover .badge { background: rgba(233,69,96,0.15); border: 1px solid #e94560; color: #e94560; padding: 8px 24px; border-radius: 24px; font-size: 13px; letter-spacing: 1px; margin-bottom: 50px; display: inline-block; }
+    .cover .meta { display: flex; gap: 60px; justify-content: center; flex-wrap: wrap; }
+    .cover .meta-item { text-align: center; }
+    .cover .meta-item .label { font-size: 11px; color: #a8dadc; text-transform: uppercase; letter-spacing: 1px; }
+    .cover .meta-item .value { font-size: 16px; font-weight: 700; color: #fff; margin-top: 4px; }
+    .cover .divider { width: 80px; height: 3px; background: #e94560; margin: 30px auto; border-radius: 2px; }
+
+    .toc { padding: 60px 80px; page-break-after: always; }
+    .toc h2 { font-size: 30px; font-weight: 800; color: #0f3460; border-bottom: 3px solid #e94560; padding-bottom: 12px; margin-bottom: 30px; }
+    .toc-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px dashed #ddd; font-size: 15px; }
+    .toc-item .toc-title { color: #16213e; font-weight: 600; }
+    .toc-item .toc-page { color: #e94560; font-weight: 700; }
+    .toc-section { font-size: 12px; color: #888; padding: 4px 0 4px 16px; border-bottom: 1px dotted #eee; }
+
+    .section { padding: 60px 80px; page-break-before: always; }
+    .section-header { display: flex; align-items: center; gap: 16px; margin-bottom: 30px; }
+    .section-icon { width: 50px; height: 50px; background: #e94560; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+    .section h2 { font-size: 30px; font-weight: 800; color: #0f3460; border-bottom: 3px solid #e94560; padding-bottom: 10px; margin-bottom: 24px; }
+    .section h3 { font-size: 20px; font-weight: 700; color: #16213e; margin: 28px 0 12px; }
+    .section h4 { font-size: 16px; font-weight: 700; color: #0f3460; margin: 20px 0 8px; }
+    .section p { margin-bottom: 14px; color: #333; }
+    .section ul, .section ol { padding-left: 24px; margin-bottom: 14px; }
+    .section li { margin-bottom: 6px; color: #333; }
+
+    .callout { border-left: 4px solid #e94560; background: #fff5f7; padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 20px 0; }
+    .callout.blue { border-color: #0f3460; background: #f0f4ff; }
+    .callout.green { border-color: #2d6a4f; background: #f0fff4; }
+    .callout strong { display: block; margin-bottom: 6px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .arch-box { background: #0f3460; color: #a8dadc; font-family: 'Courier New', monospace; font-size: 12px; padding: 28px; border-radius: 12px; margin: 24px 0; line-height: 1.6; overflow-x: auto; white-space: pre; }
+
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 13px; }
+    th { background: #0f3460; color: #fff; padding: 12px 14px; text-align: left; font-weight: 600; }
+    td { padding: 10px 14px; border-bottom: 1px solid #eee; vertical-align: top; }
+    tr:nth-child(even) td { background: #f9f9f9; }
+    tr:hover td { background: #fff0f3; }
+
+    code { background: #1a1a2e; color: #a8dadc; padding: 2px 8px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px; }
+    pre { background: #1a1a2e; color: #e0e0e0; padding: 20px; border-radius: 10px; margin: 16px 0; overflow-x: auto; font-size: 12.5px; line-height: 1.7; white-space: pre; }
+    pre .comment { color: #6a9955; }
+    pre .keyword { color: #569cd6; }
+    pre .string { color: #ce9178; }
+
+    .step-badge { display: inline-block; background: #e94560; color: #fff; font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 20px; letter-spacing: 1px; margin-bottom: 10px; }
+    .step-card { border: 1px solid #e0e0e0; border-radius: 12px; padding: 20px 24px; margin: 16px 0; border-left: 5px solid #0f3460; }
+    .step-card h4 { color: #0f3460; font-size: 16px; margin-bottom: 8px; }
+    .step-card p { font-size: 13px; color: #555; margin: 0; }
+
+    .tech-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 20px 0; }
+    .tech-card { border: 1px solid #e0e0e0; border-radius: 10px; padding: 16px; text-align: center; }
+    .tech-card .tech-icon { font-size: 28px; margin-bottom: 8px; }
+    .tech-card .tech-name { font-weight: 700; color: #0f3460; font-size: 14px; }
+    .tech-card .tech-role { font-size: 11px; color: #888; margin-top: 4px; }
+
+    .folder-tree { font-family: 'Courier New', monospace; font-size: 12.5px; background: #f8f8f8; border: 1px solid #ddd; border-radius: 10px; padding: 24px; line-height: 1.8; }
+    .folder-tree .dir { color: #0f3460; font-weight: 700; }
+    .folder-tree .file { color: #333; }
+    .folder-tree .comment { color: #888; }
+
+    .flow-step { display: flex; align-items: flex-start; gap: 20px; margin: 16px 0; }
+    .flow-num { width: 36px; height: 36px; background: #e94560; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; flex-shrink: 0; }
+    .flow-content h4 { color: #0f3460; font-size: 15px; margin-bottom: 4px; }
+    .flow-content p { font-size: 13px; color: #555; margin: 0; }
+
+    .kpi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 20px 0; }
+    .kpi-card { background: #f0f4ff; border: 1px solid #c5cff0; border-radius: 10px; padding: 16px 20px; }
+    .kpi-card .kpi-label { font-size: 12px; color: #0f3460; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .kpi-card .kpi-value { font-size: 20px; font-weight: 800; color: #e94560; margin-top: 4px; }
+    .kpi-card .kpi-desc { font-size: 12px; color: #666; margin-top: 4px; }
+
+    @media print {
+      .cover { min-height: auto; padding: 80px 60px; }
+      .section { padding: 40px 60px; }
+      .toc { padding: 40px 60px; }
+      .tech-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- COVER PAGE -->
+<div class="cover">
+  <div class="badge">INDUSTRY-LEVEL DATA ENGINEERING PROJECT</div>
+  <h1>DataNexus</h1>
+  <h2>Real-Time E-Commerce Intelligence Platform</h2>
+  <div class="divider"></div>
+  <div class="meta">
+    <div class="meta-item">
+      <div class="label">Project Type</div>
+      <div class="value">Data Engineering</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Total Steps</div>
+      <div class="value">10 Phases</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Cloud Provider</div>
+      <div class="value">Google Cloud (GCP)</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Primary Language</div>
+      <div class="value">Python 3.11+</div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <p style="color:#a8dadc; margin-top:30px; max-width:600px; font-size:15px;">
+    A production-grade, end-to-end data platform covering ETL, ELT, Change Data Capture,
+    Real-Time Streaming, Medallion Data Lake, Cloud Data Warehouse, and Infrastructure as Code.
+  </p>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <h2>📋 Table of Contents</h2>
+  <div class="toc-item"><span class="toc-title">1. Business Problem Statement</span><span class="toc-page">§1</span></div>
+  <div class="toc-item"><span class="toc-title">2. System Architecture Overview</span><span class="toc-page">§2</span></div>
+  <div class="toc-item"><span class="toc-title">3. Full Architecture Diagram</span><span class="toc-page">§2</span></div>
+  <div class="toc-item"><span class="toc-title">4. Technology Stack Deep Dive</span><span class="toc-page">§3</span></div>
+  <div class="toc-section">MySQL · PostgreSQL · Kafka · Debezium · Spark · Airflow · GCS · BigQuery · dbt · Terraform · Docker · FastAPI · Grafana · Great Expectations</div>
+  <div class="toc-item"><span class="toc-title">5. Medallion Data Lake Architecture</span><span class="toc-page">§4</span></div>
+  <div class="toc-item"><span class="toc-title">6. Data Pipeline Flows (Batch + Streaming)</span><span class="toc-page">§4</span></div>
+  <div class="toc-item"><span class="toc-title">7. Complete Project Folder Structure</span><span class="toc-page">§5</span></div>
+  <div class="toc-item"><span class="toc-title">8. Implementation Roadmap (10 Steps)</span><span class="toc-page">§6</span></div>
+  <div class="toc-item"><span class="toc-title">9. Business Dashboards & KPIs</span><span class="toc-page">§7</span></div>
+  <div class="toc-item"><span class="toc-title">10. Why This Is Industry-Level</span><span class="toc-page">§8</span></div>
+</div>
+
+<!-- SECTION 1: PROBLEM STATEMENT -->
+<div class="section">
+  <h2>§1 — Business Problem Statement</h2>
+
+  <h3>1.1 Executive Summary</h3>
+  <p>Modern e-commerce enterprises such as Amazon, Flipkart, Swiggy, and Zomato process millions of transactions and user interactions every single second. Their infrastructure is built on microservices — each service owns its own isolated database.</p>
+  <p>The critical engineering challenge: <strong>all of this data sits in silos</strong>. The Orders service uses MySQL. The User service uses PostgreSQL. Customer behaviour streams through Kafka. Market data lives behind REST APIs. There is no single place to ask cross-domain questions.</p>
+
+  <div class="callout">
+    <strong>🚨 The Core Problem</strong>
+    A business analyst cannot answer: "How does heavy rain in Mumbai affect high-value order delivery timelines and today's revenue?" — because the weather data, order data, delivery data, and user data all live in completely different systems.
+  </div>
+
+  <h3>1.2 Five Technical Problems We Are Solving</h3>
+
+  <table>
+    <tr><th>#</th><th>Problem</th><th>Technical Cause</th><th>Business Impact</th></tr>
+    <tr><td>1</td><td>Data Silos</td><td>Orders in MySQL, Users in PostgreSQL, Events in Kafka, External data in APIs</td><td>Cannot compute cross-domain analytics</td></tr>
+    <tr><td>2</td><td>Analytical Latency</td><td>Running GROUP BY queries on production OLTP databases causes table locks</td><td>Stale 24-hour-old reports, slow app performance</td></tr>
+    <tr><td>3</td><td>Lost Streaming Signals</td><td>Clickstream events (page views, cart adds) happen at millisecond frequency — RDBMS cannot ingest them</td><td>Missed real-time recommendations, high cart abandonment</td></tr>
+    <tr><td>4</td><td>Data Quality Degradation</td><td>Microservices emit null fields, negative amounts, or malformed emails without validation</td><td>Incorrect KPIs, corrupted financial dashboards</td></tr>
+    <tr><td>5</td><td>Infrastructure Drift</td><td>Manual cloud resource creation diverges between dev, staging, and production environments</td><td>Deployment failures, uncontrolled cloud costs</td></tr>
+  </table>
+
+  <h3>1.3 Strategic Objectives</h3>
+  <ul>
+    <li><strong>Zero Operational Disruption:</strong> Ingest database changes via CDC without touching or locking production databases</li>
+    <li><strong>Sub-Minute Streaming:</strong> Process clickstream events continuously with less than 60 seconds end-to-end latency</li>
+    <li><strong>Unified Data Lake:</strong> Consolidate all sources into Bronze → Silver → Gold Medallion layers on GCS</li>
+    <li><strong>Modern ELT Warehouse:</strong> Star Schema dimensional models in BigQuery using dbt</li>
+    <li><strong>Automated Quality Gates:</strong> No data flows into BigQuery without passing Great Expectations validation</li>
+    <li><strong>Infrastructure as Code:</strong> Everything provisioned via Terraform — reproducible in under 5 minutes</li>
+  </ul>
+</div>
+
+<!-- SECTION 2: ARCHITECTURE -->
+<div class="section">
+  <h2>§2 — System Architecture Overview</h2>
+
+  <h3>2.1 Architecture Philosophy</h3>
+  <p>DataNexus follows a <strong>Lambda Architecture</strong> pattern — combining a batch processing layer (for accuracy and historical data) with a streaming layer (for real-time event processing). Both layers write into the same unified Medallion Data Lake.</p>
+
+  <h3>2.2 High-Level Architecture Diagram</h3>
+  <div class="arch-box">╔══════════════════════════════════════════════════════════════════════════════════╗
+║                              DATA SOURCES LAYER                                  ║
+║                                                                                  ║
+║   ┌─────────────┐  ┌──────────────┐  ┌──────────────────┐  ┌──────────────┐    ║
+║   │  MySQL 8.0  │  │PostgreSQL 15 │  │   External APIs  │  │   Kafka      │    ║
+║   │ orders_db   │  │  users_db    │  │ Weather/Currency │  │ Clickstream  │    ║
+║   │ (OLTP)      │  │  (OLTP)      │  │   (REST/JSON)    │  │  Events      │    ║
+║   └──────┬──────┘  └──────┬───────┘  └────────┬─────────┘  └──────┬───────┘    ║
+╚══════════╪════════════════╪═══════════════════╪═══════════════════╪════════════╝
+           │                │                   │                   │
+           ▼ CDC             ▼ CDC               ▼ HTTP Poll         ▼ Stream
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║                           INGESTION LAYER                                        ║
+║                                                                                  ║
+║   ┌──────────────────┐  ┌────────────────────┐  ┌────────────────────────────┐  ║
+║   │    Debezium CDC  │  │  Python API        │  │    Apache Kafka Broker     │  ║
+║   │  (Kafka Connect) │  │  Ingestor          │  │  Topics: orders_cdc,       │  ║
+║   │ Reads MySQL binlog│  │  Writes to GCS    │  │  users_cdc, clickstream    │  ║
+║   │ & Postgres WAL   │  │  Bronze directly  │  │                            │  ║
+║   └──────────────────┘  └────────────────────┘  └────────────────────────────┘  ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+                                       │
+               ┌───────────────────────┴──────────────────────┐
+               ▼  BATCH (Scheduled)                           ▼  STREAMING (Continuous)
+╔══════════════════════════════╗             ╔════════════════════════════════════╗
+║     BATCH PROCESSING         ║             ║     STREAM PROCESSING              ║
+║                              ║             ║                                    ║
+║  ┌────────────────────────┐  ║             ║  ┌──────────────────────────────┐  ║
+║  │    Apache Spark        │  ║             ║  │   Spark Structured Streaming │  ║
+║  │    (PySpark ETL)       │  ║             ║  │   Kafka → Micro-batch →      │  ║
+║  │                        │  ║             ║  │   GCS Bronze Zone            │  ║
+║  │  Orchestrated by       │  ║             ║  └──────────────────────────────┘  ║
+║  │  Apache Airflow DAGs   │  ║             ╚════════════════════════════════════╝
+║  └────────────────────────┘  ║
+╚══════════════════════════════╝
+               │                                              │
+               └───────────────────────┬──────────────────────┘
+                                       ▼
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║                      DATA LAKE — MEDALLION ARCHITECTURE                          ║
+║                         (Google Cloud Storage — GCS)                             ║
+║                                                                                  ║
+║  ┌─────────────────┐     ┌──────────────────┐     ┌──────────────────────────┐  ║
+║  │   BRONZE ZONE   │     │   SILVER ZONE    │     │       GOLD ZONE          │  ║
+║  │                 │     │                  │     │                          │  ║
+║  │  Raw data files │ ──▶ │ Cleaned Parquet  │ ──▶ │  Business Aggregations   │  ║
+║  │  JSON / CSV     │     │ Deduplicated     │     │  Joined across domains   │  ║
+║  │  Immutable      │     │ Delta Lake fmt   │     │  Ready for BigQuery      │  ║
+║  └─────────────────┘     └──────────────────┘     └──────────────────────────┘  ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+                                       │  ELT Load
+                                       ▼
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║                    DATA WAREHOUSE (Google BigQuery + dbt)                        ║
+║                                                                                  ║
+║   datanexus_raw ──▶ datanexus_staging ──▶ datanexus_analytics                   ║
+║                                                                                  ║
+║   dbt: Staging Models ──▶ Fact Tables ──▶ Dimension Tables ──▶ Aggregations      ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+                                       │
+                                       ▼
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║                           SERVING LAYER                                          ║
+║                                                                                  ║
+║   ┌─────────────────────────┐        ┌──────────────────────────────────────┐   ║
+║   │  FastAPI REST Service   │        │  Grafana + Looker Studio Dashboards  │   ║
+║   │  /api/v1/revenue        │        │  Revenue, DAU, Delivery SLA, Trends  │   ║
+║   └─────────────────────────┘        └──────────────────────────────────────┘   ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║              INFRASTRUCTURE LAYER — Runs & Governs Everything                    ║
+║   Terraform (IaC) ──── Docker (Containers) ──── GCP (Cloud) ──── GitHub (VCS)   ║
+╚══════════════════════════════════════════════════════════════════════════════════╝</div>
+</div>
+
+<!-- SECTION 3: TECH STACK -->
+<div class="section">
+  <h2>§3 — Technology Stack Deep Dive</h2>
+
+  <div class="tech-grid">
+    <div class="tech-card"><div class="tech-icon">🐬</div><div class="tech-name">MySQL 8.0</div><div class="tech-role">Orders OLTP Source DB</div></div>
+    <div class="tech-card"><div class="tech-icon">🐘</div><div class="tech-name">PostgreSQL 15</div><div class="tech-role">Users/Inventory OLTP Source DB</div></div>
+    <div class="tech-card"><div class="tech-icon">📨</div><div class="tech-name">Apache Kafka</div><div class="tech-role">Event Streaming Backbone</div></div>
+    <div class="tech-card"><div class="tech-icon">🔄</div><div class="tech-name">Debezium</div><div class="tech-role">Change Data Capture (CDC)</div></div>
+    <div class="tech-card"><div class="tech-icon">⚡</div><div class="tech-name">Apache Spark</div><div class="tech-role">Batch & Stream Processing</div></div>
+    <div class="tech-card"><div class="tech-icon">🌬️</div><div class="tech-name">Apache Airflow</div><div class="tech-role">Pipeline Orchestration</div></div>
+    <div class="tech-card"><div class="tech-icon">☁️</div><div class="tech-name">Google Cloud Storage</div><div class="tech-role">Medallion Data Lake</div></div>
+    <div class="tech-card"><div class="tech-icon">🏭</div><div class="tech-name">Google BigQuery</div><div class="tech-role">Analytical Data Warehouse</div></div>
+    <div class="tech-card"><div class="tech-icon">🔧</div><div class="tech-name">dbt</div><div class="tech-role">ELT SQL Transformations</div></div>
+    <div class="tech-card"><div class="tech-icon">🏗️</div><div class="tech-name">Terraform</div><div class="tech-role">Infrastructure as Code</div></div>
+    <div class="tech-card"><div class="tech-icon">🐳</div><div class="tech-name">Docker Compose</div><div class="tech-role">Local Container Orchestration</div></div>
+    <div class="tech-card"><div class="tech-icon">✅</div><div class="tech-name">Great Expectations</div><div class="tech-role">Data Quality Validation</div></div>
+  </div>
+
+  <h3>3.1 MySQL — Orders OLTP Database</h3>
+  <p>MySQL is a relational database management system (RDBMS) storing data in structured rows/columns. In DataNexus it simulates the Orders microservice database containing <code>orders</code>, <code>order_items</code>, and <code>payments</code> tables. Configured with <strong>Binary Log in ROW format</strong> so Debezium can read each row change without querying tables.</p>
+
+  <h3>3.2 PostgreSQL — Users & Inventory OLTP Database</h3>
+  <p>PostgreSQL is an advanced RDBMS supporting JSON, arrays, and complex types. Simulates the Users and Inventory microservices with <code>users</code> and <code>inventory</code> tables. Configured with <strong>WAL Logical Replication</strong> so Debezium can stream changes via logical decoding.</p>
+
+  <h3>3.3 Apache Kafka — The Event Streaming Backbone</h3>
+  <p>Kafka is a distributed event streaming platform capable of handling millions of events per second. Core concepts:</p>
+  <table>
+    <tr><th>Concept</th><th>What It Is</th><th>Analogy</th></tr>
+    <tr><td>Producer</td><td>Application that writes events</td><td>Reporter filing a story</td></tr>
+    <tr><td>Topic</td><td>Named channel/category of events</td><td>Newspaper section</td></tr>
+    <tr><td>Partition</td><td>Topic split for parallel processing</td><td>Multiple printing presses</td></tr>
+    <tr><td>Consumer</td><td>Application that reads events</td><td>Reader subscribing to section</td></tr>
+    <tr><td>Offset</td><td>Unique sequential ID per event</td><td>Page number in newspaper</td></tr>
+    <tr><td>Consumer Group</td><td>Multiple consumers sharing load</td><td>Multiple readers splitting sections</td></tr>
+  </table>
+
+  <h3>3.4 Debezium — Change Data Capture (CDC)</h3>
+  <p>Debezium is a CDC tool that reads database transaction logs (MySQL Binary Log, PostgreSQL WAL) and publishes every INSERT/UPDATE/DELETE as a Kafka event — in real time, without querying tables, without locking, without degrading database performance.</p>
+  <div class="callout blue">
+    <strong>Why CDC instead of polling?</strong>
+    Polling (running SELECT every 5 seconds) is slow, misses deletes, stresses the database, and creates duplicate records. CDC reads the internal transaction log — capturing every atomic change instantly.
+  </div>
+
+  <h3>3.5 Apache Spark — Distributed Processing Engine</h3>
+  <p>Spark is a distributed in-memory data processing framework. It splits data into partitions and processes them in parallel across many CPU cores or machines. Two modes used in DataNexus:</p>
+  <ul>
+    <li><strong>Spark Batch (ETL):</strong> Reads GCS Bronze → cleans/joins → writes GCS Silver → Gold → BigQuery</li>
+    <li><strong>Spark Streaming:</strong> Reads Kafka events continuously in micro-batches → writes to GCS Bronze in real time</li>
+  </ul>
+
+  <h3>3.6 Apache Airflow — Workflow Orchestration</h3>
+  <p>Airflow is a platform for authoring, scheduling, and monitoring data pipelines as code. Pipelines are defined as <strong>DAGs (Directed Acyclic Graphs)</strong> — Python files where each node is a task and edges define dependencies.</p>
+  <pre><code># Example Airflow DAG concept
+ingest_api >> spark_bronze_etl >> spark_silver_etl >> spark_gold_etl >> bq_load >> dbt_run >> quality_check</code></pre>
+
+  <h3>3.7 Google Cloud Storage — Data Lake</h3>
+  <p>GCS is Google's object storage — a virtually unlimited cloud hard drive. In DataNexus it hosts the Medallion Data Lake with three zones: Bronze (raw), Silver (cleaned Parquet/Delta Lake), and Gold (aggregated, join-ready datasets).</p>
+
+  <h3>3.8 Google BigQuery — Analytical Data Warehouse</h3>
+  <p>BigQuery is a serverless, fully-managed analytical warehouse. It runs petabyte-scale SQL queries in seconds using distributed columnar storage. It is the final destination for processed data — where analysts and dashboards query from.</p>
+  <table>
+    <tr><th>Feature</th><th>Data Lake (GCS)</th><th>Data Warehouse (BigQuery)</th></tr>
+    <tr><td>Format</td><td>Raw files (JSON, Parquet)</td><td>Structured tables</td></tr>
+    <tr><td>Query method</td><td>Code (Spark/Python)</td><td>SQL directly</td></tr>
+    <tr><td>Users</td><td>Data Engineers</td><td>Data Analysts, BI Tools</td></tr>
+    <tr><td>Speed</td><td>Slower (file scanning)</td><td>Very fast (columnar, cached)</td></tr>
+  </table>
+
+  <h3>3.9 dbt — ELT Transformation Framework</h3>
+  <p>dbt (data build tool) turns SQL SELECT statements into managed tables/views inside BigQuery. It handles dependency resolution, test assertions, and documentation automatically — making SQL transformations version-controlled and testable.</p>
+
+  <h3>3.10 Terraform — Infrastructure as Code</h3>
+  <p>Terraform lets you define cloud infrastructure in code files (.tf). Running <code>terraform apply</code> creates all GCP resources (GCS buckets, BigQuery datasets, IAM roles) automatically — reproducible in any environment.</p>
+
+  <h3>3.11 Docker & Docker Compose — Containerization</h3>
+  <p>Docker packages software into self-contained, portable containers. Docker Compose orchestrates multiple containers together. Used for local development — one <code>docker-compose up -d</code> boots MySQL, PostgreSQL, Kafka, Zookeeper, Spark Master, and Spark Worker simultaneously.</p>
+
+  <h3>3.12 Great Expectations — Data Quality</h3>
+  <p>Great Expectations is a Python library for automated data validation. You define "expectations" (rules) such as "order_id must never be null" or "total_amount must be > 0". It validates data at every zone boundary and blocks bad records from proceeding.</p>
+</div>
+
+<!-- SECTION 4: MEDALLION -->
+<div class="section">
+  <h2>§4 — Medallion Architecture & Pipeline Flows</h2>
+
+  <h3>4.1 Medallion Architecture Explained</h3>
+  <p>Used at Netflix, Uber, and Databricks — the Medallion (Bronze/Silver/Gold) architecture organizes data into three progressively refined zones:</p>
+
+  <table>
+    <tr><th>Zone</th><th>Nickname</th><th>Content</th><th>Format</th><th>Who Writes</th><th>Who Reads</th></tr>
+    <tr><td>Bronze</td><td>Raw</td><td>Exact copy of source data. Nothing changed. Immutable.</td><td>JSON, CSV</td><td>Debezium, Spark Streaming, API Ingestor</td><td>Spark Silver ETL</td></tr>
+    <tr><td>Silver</td><td>Cleaned</td><td>Deduplicated, nulls handled, dates standardized</td><td>Parquet (Delta Lake)</td><td>Spark Bronze→Silver ETL</td><td>Spark Gold ETL</td></tr>
+    <tr><td>Gold</td><td>Business-Ready</td><td>Multi-table joins, aggregations, enriched with weather/currency data</td><td>Parquet (Delta Lake)</td><td>Spark Silver→Gold ETL</td><td>BigQuery Loader</td></tr>
+  </table>
+
+  <h3>4.2 GCS Folder Structure</h3>
+  <div class="arch-box">gs://datanexus-datalake-dev-storage/
+├── bronze/
+│   ├── mysql/orders/year=2025/month=08/day=18/orders_20250818.json
+│   ├── mysql/payments/year=2025/month=08/day=18/
+│   ├── postgres/users/year=2025/month=08/day=18/
+│   ├── kafka/clickstream/year=2025/month=08/day=18/hour=14/
+│   └── api/weather/year=2025/month=08/day=18/mumbai_weather.json
+├── silver/
+│   ├── orders/year=2025/month=08/part-000.parquet
+│   ├── users/year=2025/month=08/part-000.parquet
+│   └── inventory/year=2025/month=08/part-000.parquet
+└── gold/
+    ├── daily_revenue/year=2025/month=08/day=18/
+    ├── user_behavior/year=2025/month=08/day=18/
+    └── delivery_performance/year=2025/month=08/day=18/</div>
+
+  <h3>4.3 Batch Pipeline Flow (ETL)</h3>
+  <div class="flow-step"><div class="flow-num">1</div><div class="flow-content"><h4>Airflow DAG Triggers at Midnight</h4><p>Scheduler fires the daily_etl_pipeline DAG at 00:00</p></div></div>
+  <div class="flow-step"><div class="flow-num">2</div><div class="flow-content"><h4>API Ingestor Runs</h4><p>Python scripts call OpenWeatherMap & Exchange Rate APIs → save JSON to GCS Bronze</p></div></div>
+  <div class="flow-step"><div class="flow-num">3</div><div class="flow-content"><h4>Debezium Streams CDC Events</h4><p>MySQL binlog + PostgreSQL WAL changes flow through Kafka → Spark Streaming writes to GCS Bronze</p></div></div>
+  <div class="flow-step"><div class="flow-num">4</div><div class="flow-content"><h4>Spark Bronze→Silver ETL</h4><p>PySpark reads Bronze JSON → deduplicates, type-casts, standardizes → writes Parquet to Silver</p></div></div>
+  <div class="flow-step"><div class="flow-num">5</div><div class="flow-content"><h4>Spark Silver→Gold ETL</h4><p>Joins orders + users + inventory + weather → calculates daily revenue, delivery SLAs → writes Gold</p></div></div>
+  <div class="flow-step"><div class="flow-num">6</div><div class="flow-content"><h4>BigQuery Load</h4><p>Gold Parquet files loaded into datanexus_raw BigQuery dataset</p></div></div>
+  <div class="flow-step"><div class="flow-num">7</div><div class="flow-content"><h4>dbt Runs Transformations</h4><p>Staging → Fact/Dim models → Aggregations built inside BigQuery</p></div></div>
+  <div class="flow-step"><div class="flow-num">8</div><div class="flow-content"><h4>Dashboards Refresh</h4><p>Grafana & Looker Studio display updated revenue, orders, user behavior KPIs</p></div></div>
+
+  <h3>4.4 Streaming Pipeline Flow (Real-Time)</h3>
+  <div class="flow-step"><div class="flow-num">1</div><div class="flow-content"><h4>User Action on Website</h4><p>Customer clicks a product page → frontend sends clickstream event</p></div></div>
+  <div class="flow-step"><div class="flow-num">2</div><div class="flow-content"><h4>Kafka Producer Publishes</h4><p>Event written to clickstream_events Kafka topic with full user/product context</p></div></div>
+  <div class="flow-step"><div class="flow-num">3</div><div class="flow-content"><h4>Spark Streaming Reads Kafka</h4><p>Micro-batch job reads clickstream_events every 10 seconds</p></div></div>
+  <div class="flow-step"><div class="flow-num">4</div><div class="flow-content"><h4>Enrich & Write to GCS Bronze</h4><p>Events enriched with user data → written to GCS Bronze partitioned by hour</p></div></div>
+  <div class="flow-step"><div class="flow-num">5</div><div class="flow-content"><h4>Real-Time Aggregation</h4><p>Trending products counted per minute → written to BigQuery streaming buffer</p></div></div>
+  <div class="flow-step"><div class="flow-num">6</div><div class="flow-content"><h4>Grafana Dashboard Updates</h4><p>Real-time product trends visible every 30 seconds</p></div></div>
+</div>
+
+<!-- SECTION 5: FOLDER STRUCTURE -->
+<div class="section">
+  <h2>§5 — Complete Project Folder Structure</h2>
+  <div class="folder-tree">
+<span class="dir">DataNexus/</span>
+│
+├── <span class="dir">steps/</span>                               <span class="comment">← Step-by-step learning notes</span>
+│   ├── step_01_local_setup.md
+│   ├── step_02_infrastructure.md
+│   ├── step_03_ingestion.md
+│   ├── step_04_batch_processing.md
+│   ├── step_05_streaming.md
+│   ├── step_06_warehouse_dbt.md
+│   ├── step_07_orchestration.md
+│   ├── step_08_data_quality.md
+│   ├── step_09_serving_api.md
+│   └── step_10_dashboards.md
+│
+├── <span class="dir">docker/</span>                              <span class="comment">← Local dev environment (Step 1)</span>
+│   ├── docker-compose.yml               <span class="comment">← Starts all 6 containers</span>
+│   ├── <span class="dir">mysql/</span>
+│   │   ├── my.cnf                       <span class="comment">← Enables binary log for CDC</span>
+│   │   └── init.sql                     <span class="comment">← Creates orders_db + seed data</span>
+│   └── <span class="dir">postgres/</span>
+│       ├── postgresql.conf              <span class="comment">← Enables WAL logical replication</span>
+│       └── init.sql                     <span class="comment">← Creates users_db + seed data</span>
+│
+├── <span class="dir">infrastructure/</span>                      <span class="comment">← Terraform GCP setup (Step 2)</span>
+│   ├── main.tf                          <span class="comment">← Provider, service account, IAM</span>
+│   ├── variables.tf                     <span class="comment">← Project ID, region, env vars</span>
+│   ├── gcs.tf                           <span class="comment">← GCS bucket + Bronze/Silver/Gold folders</span>
+│   ├── bigquery.tf                      <span class="comment">← raw, staging, analytics datasets</span>
+│   └── outputs.tf                       <span class="comment">← Exports bucket name, dataset IDs</span>
+│
+├── <span class="dir">ingestion/</span>                           <span class="comment">← Data ingestion layer (Step 3)</span>
+│   ├── <span class="dir">debezium/</span>
+│   │   ├── mysql-connector.json         <span class="comment">← CDC connector for MySQL</span>
+│   │   └── postgres-connector.json      <span class="comment">← CDC connector for PostgreSQL</span>
+│   ├── <span class="dir">kafka_producers/</span>
+│   │   ├── clickstream_producer.py      <span class="comment">← Simulates user click events</span>
+│   │   └── order_events_producer.py     <span class="comment">← Simulates order placement events</span>
+│   └── <span class="dir">api_ingestor/</span>
+│       ├── weather_ingestor.py          <span class="comment">← Pulls OpenWeatherMap API</span>
+│       ├── exchange_rate_ingestor.py    <span class="comment">← Pulls currency exchange API</span>
+│       └── config.py                    <span class="comment">← API keys, GCS paths, schedule config</span>
+│
+├── <span class="dir">processing/</span>                          <span class="comment">← PySpark ETL & Streaming (Steps 4-5)</span>
+│   ├── <span class="dir">batch/</span>
+│   │   ├── <span class="dir">bronze_to_silver/</span>
+│   │   │   ├── orders_etl.py            <span class="comment">← Cleans orders data</span>
+│   │   │   ├── users_etl.py             <span class="comment">← Cleans users data</span>
+│   │   │   └── inventory_etl.py         <span class="comment">← Cleans inventory data</span>
+│   │   └── <span class="dir">silver_to_gold/</span>
+│   │       ├── daily_revenue.py         <span class="comment">← Joins orders+users+weather → revenue</span>
+│   │       └── user_behavior.py         <span class="comment">← Aggregates clickstream → behavior</span>
+│   └── <span class="dir">streaming/</span>
+│       ├── clickstream_processor.py     <span class="comment">← Kafka→Spark→GCS Bronze streaming</span>
+│       └── orders_stream.py             <span class="comment">← CDC orders streaming pipeline</span>
+│
+├── <span class="dir">warehouse/</span>                           <span class="comment">← dbt + BigQuery models (Step 6)</span>
+│   └── <span class="dir">dbt_datanexus/</span>
+│       ├── dbt_project.yml              <span class="comment">← dbt project config</span>
+│       ├── profiles.yml                 <span class="comment">← BigQuery connection settings</span>
+│       ├── <span class="dir">models/</span>
+│       │   ├── <span class="dir">staging/</span>
+│       │   │   ├── stg_orders.sql       <span class="comment">← Raw → cleaned staging model</span>
+│       │   │   └── stg_users.sql        <span class="comment">← Raw → cleaned users model</span>
+│       │   └── <span class="dir">analytics/</span>
+│       │       ├── fact_orders.sql      <span class="comment">← Fact table (grain: one row per order)</span>
+│       │       ├── dim_users.sql        <span class="comment">← Dimension table (user attributes)</span>
+│       │       └── agg_daily_revenue.sql <span class="comment">← Daily revenue aggregation</span>
+│       └── <span class="dir">tests/</span>
+│           └── schema.yml               <span class="comment">← dbt data quality assertions</span>
+│
+├── <span class="dir">orchestration/</span>                       <span class="comment">← Airflow DAGs (Step 7)</span>
+│   └── <span class="dir">dags/</span>
+│       ├── daily_etl_pipeline.py        <span class="comment">← Main batch pipeline DAG</span>
+│       ├── api_ingestion_dag.py         <span class="comment">← Schedules API pulls hourly</span>
+│       └── dbt_run_dag.py               <span class="comment">← Triggers dbt after ETL finishes</span>
+│
+├── <span class="dir">quality/</span>                             <span class="comment">← Data quality framework (Step 8)</span>
+│   └── <span class="dir">great_expectations/</span>
+│       ├── <span class="dir">expectations/</span>                <span class="comment">← Rule definitions per table</span>
+│       └── <span class="dir">checkpoints/</span>                 <span class="comment">← Checkpoint configs for each zone</span>
+│
+├── <span class="dir">serving/</span>                             <span class="comment">← FastAPI REST service (Step 9)</span>
+│   └── <span class="dir">api/</span>
+│       ├── main.py                      <span class="comment">← FastAPI app entry point</span>
+│       ├── <span class="dir">routers/</span>
+│       │   ├── revenue.py               <span class="comment">← /api/v1/revenue endpoints</span>
+│       │   └── products.py              <span class="comment">← /api/v1/products/trending endpoints</span>
+│       ├── Dockerfile                   <span class="comment">← Container image for Cloud Run</span>
+│       └── requirements.txt             <span class="comment">← Python deps for API</span>
+│
+├── <span class="dir">dashboard/</span>                           <span class="comment">← Grafana config (Step 10)</span>
+│   └── <span class="dir">grafana/dashboards/</span>              <span class="comment">← JSON dashboard definitions</span>
+│
+├── <span class="dir">scripts/</span>                             <span class="comment">← Utility scripts</span>
+│   ├── seed_mysql.py                    <span class="comment">← Generates large fake order datasets</span>
+│   └── seed_postgres.py                 <span class="comment">← Generates large fake user datasets</span>
+│
+├── <span class="dir">docs/</span>                                <span class="comment">← Additional documentation</span>
+├── .env.example                         <span class="comment">← Template for secret credentials</span>
+├── requirements.txt                     <span class="comment">← Global Python dependencies</span>
+└── README.md                            <span class="comment">← Project overview</span>
+  </div>
+</div>
+
+<!-- SECTION 6: ROADMAP -->
+<div class="section">
+  <h2>§6 — Implementation Roadmap (10 Steps)</h2>
+
+  <div class="step-card"><span class="step-badge">STEP 1</span><h4>Local Development Infrastructure (Docker)</h4><p>Set up MySQL, PostgreSQL, Kafka, Zookeeper, Spark Master, Spark Worker — all in Docker containers on a shared bridge network. Configure MySQL binlog and PostgreSQL WAL for future CDC ingestion.</p></div>
+  <div class="step-card"><span class="step-badge">STEP 2</span><h4>Cloud Infrastructure as Code (Terraform + GCP)</h4><p>Provision GCS Data Lake bucket (Bronze/Silver/Gold folders), BigQuery datasets (raw, staging, analytics), and IAM Service Accounts using Terraform. No manual console clicks.</p></div>
+  <div class="step-card"><span class="step-badge">STEP 3</span><h4>Multi-Source Data Ingestion (Debezium + Kafka + API)</h4><p>Configure Debezium CDC connectors for MySQL and PostgreSQL. Write Python Kafka producers for clickstream events. Write API ingestors for OpenWeatherMap and Exchange Rate APIs.</p></div>
+  <div class="step-card"><span class="step-badge">STEP 4</span><h4>Batch Processing ETL Pipeline (PySpark)</h4><p>Write PySpark jobs to transform Bronze → Silver (clean, deduplicate, type-cast) and Silver → Gold (join, aggregate, enrich). Output: Parquet files stored in Delta Lake format on GCS.</p></div>
+  <div class="step-card"><span class="step-badge">STEP 5</span><h4>Real-Time Streaming Pipeline (Spark Structured Streaming)</h4><p>Write Spark Structured Streaming jobs that consume Kafka clickstream events continuously, enrich them, and write to GCS Bronze in real time using micro-batch processing.</p></div>
+  <div class="step-card"><span class="step-badge">STEP 6</span><h4>Data Warehouse & ELT (BigQuery + dbt)</h4><p>Load Gold Parquet files into BigQuery. Build dbt SQL models: staging models → fact_orders → dim_users → agg_daily_revenue. Implement Star Schema dimensional modeling.</p></div>
+  <div class="step-card"><span class="step-badge">STEP 7</span><h4>Pipeline Orchestration (Apache Airflow)</h4><p>Build Airflow DAGs connecting all tasks in order with dependency management, retry logic, and failure alerts. The main DAG: API Ingest → Spark ETL → BigQuery Load → dbt → Quality Check.</p></div>
+  <div class="step-card"><span class="step-badge">STEP 8</span><h4>Data Quality Framework (Great Expectations)</h4><p>Write expectation suites for each data zone boundary. Automate validation gates so corrupted or incomplete data is blocked from proceeding to Silver/Gold/BigQuery.</p></div>
+  <div class="step-card"><span class="step-badge">STEP 9</span><h4>REST API Serving Layer (FastAPI)</h4><p>Build a FastAPI application with endpoints: /api/v1/revenue/daily, /api/v1/revenue/by-city, /api/v1/products/trending, /api/v1/delivery/sla. Deploy on GCP Cloud Run via Dockerfile.</p></div>
+  <div class="step-card"><span class="step-badge">STEP 10</span><h4>Business Dashboards (Grafana + Looker Studio)</h4><p>Configure Grafana for pipeline operational metrics (Kafka lag, Spark job times, Airflow DAG health). Connect Looker Studio to BigQuery for business KPI dashboards (Revenue, DAU, Delivery SLA).</p></div>
+</div>
+
+<!-- SECTION 7: DASHBOARDS & KPIs -->
+<div class="section">
+  <h2>§7 — Business Dashboards & KPIs</h2>
+
+  <h3>7.1 Revenue & Sales Dashboard (Looker Studio)</h3>
+  <div class="kpi-grid">
+    <div class="kpi-card"><div class="kpi-label">Daily GMV</div><div class="kpi-value">₹ Real-time</div><div class="kpi-desc">Gross Merchandise Value aggregated by day, refreshed every pipeline run</div></div>
+    <div class="kpi-card"><div class="kpi-label">Average Order Value</div><div class="kpi-value">AOV by City</div><div class="kpi-desc">Average spend per order broken down by shipping city</div></div>
+    <div class="kpi-card"><div class="kpi-label">Top Products</div><div class="kpi-value">Top 10 SKUs</div><div class="kpi-desc">Best-selling products by revenue and unit volume</div></div>
+    <div class="kpi-card"><div class="kpi-label">Revenue Trend</div><div class="kpi-value">30-Day Chart</div><div class="kpi-desc">Rolling 30-day revenue trend line with day-over-day comparison</div></div>
+  </div>
+
+  <h3>7.2 User Behaviour Dashboard (Looker Studio)</h3>
+  <table>
+    <tr><th>Metric</th><th>Source Data</th><th>Update Frequency</th></tr>
+    <tr><td>Daily Active Users (DAU)</td><td>Clickstream Kafka events</td><td>Near real-time (30 sec)</td></tr>
+    <tr><td>Cart Abandonment Rate</td><td>add_to_cart vs order_placed events</td><td>Hourly batch</td></tr>
+    <tr><td>Top Search Terms</td><td>search_events Kafka topic</td><td>Near real-time (30 sec)</td></tr>
+    <tr><td>New User Registrations</td><td>PostgreSQL users CDC</td><td>Real-time CDC</td></tr>
+  </table>
+
+  <h3>7.3 Pipeline Health Dashboard (Grafana)</h3>
+  <table>
+    <tr><th>Panel</th><th>What It Shows</th></tr>
+    <tr><td>Kafka Consumer Lag</td><td>How far behind Spark Streaming is from the latest Kafka offset</td></tr>
+    <tr><td>Airflow DAG Success Rate</td><td>Percentage of DAG runs that completed successfully in last 7 days</td></tr>
+    <tr><td>Spark Job Duration</td><td>Time taken per Spark ETL job over last 30 days</td></tr>
+    <tr><td>Data Freshness</td><td>Last updated timestamp for each BigQuery table</td></tr>
+    <tr><td>Quality Check Pass Rate</td><td>Percentage of Great Expectations checkpoints passing per zone</td></tr>
+  </table>
+</div>
+
+<!-- SECTION 8: WHY INDUSTRY-LEVEL -->
+<div class="section">
+  <h2>§8 — Why This Is Industry-Level</h2>
+
+  <table>
+    <tr><th>Practice</th><th>Industry Standard</th><th>Used By</th></tr>
+    <tr><td>Medallion Architecture (Bronze/Silver/Gold)</td><td>✅ Yes</td><td>Netflix, Uber, Databricks, Microsoft</td></tr>
+    <tr><td>Change Data Capture (Debezium)</td><td>✅ Yes</td><td>LinkedIn, Confluent, most Fortune 500</td></tr>
+    <tr><td>Infrastructure as Code (Terraform)</td><td>✅ Yes</td><td>Every major cloud-native company</td></tr>
+    <tr><td>Containerized Local Dev (Docker)</td><td>✅ Yes</td><td>Universal in software engineering</td></tr>
+    <tr><td>ELT with dbt + BigQuery</td><td>✅ Yes</td><td>Airbnb, GitLab, Spotify</td></tr>
+    <tr><td>Data Quality Gates (Great Expectations)</td><td>✅ Yes</td><td>Superconductive, WW Grainger</td></tr>
+    <tr><td>Workflow Orchestration (Airflow)</td><td>✅ Yes</td><td>Airbnb (invented it), Google, Lyft</td></tr>
+    <tr><td>Lambda Architecture (Batch + Stream)</td><td>✅ Yes</td><td>LinkedIn (invented it), Twitter</td></tr>
+    <tr><td>Columnar Storage (Parquet/Delta Lake)</td><td>✅ Yes</td><td>Apache, Databricks, AWS</td></tr>
+    <tr><td>Star Schema Dimensional Modeling</td><td>✅ Yes</td><td>Every data warehouse since 1990s</td></tr>
+  </table>
+
+  <div class="callout green">
+    <strong>✅ Career Impact</strong>
+    This project covers the full data engineering lifecycle — from raw source data to business dashboards. It demonstrates hands-on experience with tools used at FAANG companies and is directly interviewable at Data Engineer roles in any major technology company.
+  </div>
+
+  <h3>Full Technology Version Reference</h3>
+  <table>
+    <tr><th>Technology</th><th>Version</th><th>Purpose</th></tr>
+    <tr><td>Python</td><td>3.11+</td><td>Primary programming language</td></tr>
+    <tr><td>MySQL</td><td>8.0</td><td>Orders OLTP source database</td></tr>
+    <tr><td>PostgreSQL</td><td>15</td><td>Users/Inventory OLTP source database</td></tr>
+    <tr><td>Apache Kafka</td><td>7.5.0 (Confluent)</td><td>Event streaming platform</td></tr>
+    <tr><td>Debezium</td><td>2.x</td><td>Change Data Capture</td></tr>
+    <tr><td>Apache Spark</td><td>3.5.0</td><td>Distributed batch & stream processing</td></tr>
+    <tr><td>Apache Airflow</td><td>2.x</td><td>Workflow orchestration</td></tr>
+    <tr><td>Terraform</td><td>1.5+</td><td>Infrastructure as Code</td></tr>
+    <tr><td>Docker</td><td>24.x</td><td>Containerization</td></tr>
+    <tr><td>Google Cloud Storage</td><td>Latest</td><td>Medallion Data Lake</td></tr>
+    <tr><td>Google BigQuery</td><td>Latest</td><td>Analytical Data Warehouse</td></tr>
+    <tr><td>dbt</td><td>1.7+</td><td>ELT SQL transformations</td></tr>
+    <tr><td>FastAPI</td><td>0.110+</td><td>REST API serving layer</td></tr>
+    <tr><td>Grafana</td><td>10.x</td><td>Operational dashboards</td></tr>
+    <tr><td>Great Expectations</td><td>0.18+</td><td>Data quality validation</td></tr>
+  </table>
+
+  <div style="margin-top:50px; text-align:center; color:#888; font-size:12px; border-top:1px solid #eee; padding-top:20px;">
+    DataNexus — Real-Time E-Commerce Intelligence Platform &nbsp;|&nbsp; Industry-Level Data Engineering Project &nbsp;|&nbsp; 2025
+  </div>
+</div>
+
+</body>
+</html>
