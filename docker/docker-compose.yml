@@ -64,7 +64,32 @@ services:
     networks:
       - datanexus-net
 
-  # 5. Apache Spark Master
+  # 5. Debezium Kafka Connect (Change Data Capture Engine)
+  debezium:
+    image: debezium/connect:2.4.0.Final
+    container_name: datanexus-debezium
+    depends_on:
+      - kafka
+      - mysql
+      - postgres
+    ports:
+      - "8083:8083"
+    environment:
+      BOOTSTRAP_SERVERS: kafka:29092
+      GROUP_ID: 1
+      CONFIG_STORAGE_TOPIC: connect_configs
+      OFFSET_STORAGE_TOPIC: connect_offsets
+      STATUS_STORAGE_TOPIC: connect_statuses
+      CONFIG_STORAGE_REPLICATION_FACTOR: 1
+      OFFSET_STORAGE_REPLICATION_FACTOR: 1
+      STATUS_STORAGE_REPLICATION_FACTOR: 1
+      KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      ENABLE_DEBEZIUM_SCRIPTING: "false"
+    networks:
+      - datanexus-net
+
+  # 6. Apache Spark Master
   spark-master:
     image: apache/spark:3.5.0
     container_name: datanexus-spark-master
@@ -75,7 +100,7 @@ services:
     networks:
       - datanexus-net
 
-  # 6. Apache Spark Worker
+  # 7. Apache Spark Worker
   spark-worker:
     image: apache/spark:3.5.0
     container_name: datanexus-spark-worker

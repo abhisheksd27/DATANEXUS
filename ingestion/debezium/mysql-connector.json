@@ -1,0 +1,19 @@
+{
+  "name": "mysql-orders-cdc-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.mysql.MySqlConnector",
+    "tasks.max": "1",
+    "database.hostname": "mysql",
+    "database.port": "3306",
+    "database.user": "root",
+    "database.password": "rootpassword",
+    "database.server.id": "184054",
+    "topic.prefix": "cdc.mysql",
+    "database.include.list": "orders_db",
+    "table.include.list": "orders_db.orders,orders_db.order_items,orders_db.payments",
+    "schema.history.internal.kafka.bootstrap.servers": "kafka:29092",
+    "schema.history.internal.kafka.topic": "schema-changes.mysql.orders",
+    "include.schema.changes": "true",
+    "decimal.handling.mode": "double"
+  }
+}
