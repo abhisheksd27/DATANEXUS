@@ -1,7 +1,7 @@
 # Terraform Output Values
 
 # output "gcs_bucket_name" {
-#   description = "The created GCS Data Lake bucket name"
+#   description = "The created GCS Data Lake bucket name". 
 #   value       = google_storage_bucket.datalake.name
 # }
 
