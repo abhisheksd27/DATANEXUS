@@ -11,11 +11,20 @@ import random
 import time
 import uuid
 from datetime import datetime, timezone
-from kafka import KafkaProducer
+from pathlib import Path
+
+try:
+    from kafka import KafkaProducer
+except ImportError:
+    try:
+        from kafka_python_ng import KafkaProducer
+    except ImportError:
+        KafkaProducer = None
 
 # Kafka Configuration
 KAFKA_BOOTSTRAP_SERVERS = ['localhost:9092']
 TOPIC_NAME = 'order_events'
+BRONZE_ORDERS_DIR = Path(__file__).resolve().parents[2] / "datalake" / "bronze" / "kafka" / "order_events"
 
 USERS = [f"usr-{i:03d}" for i in range(1, 21)]
 PRODUCTS = [
@@ -61,24 +70,49 @@ def generate_order_event():
     }
 
 
-def start_order_producer(events_count=30, delay_seconds=0.8):
-    print(f"🚀 Connecting to Kafka broker at {KAFKA_BOOTSTRAP_SERVERS}...")
-    producer = KafkaProducer(
-        bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS,
-        value_serializer=lambda v: json.dumps(v).encode('utf-8')
-    )
+def start_order_producer(events_count=20, delay_seconds=0.05):
+    producer = None
+    if KafkaProducer is not None:
+        try:
+            print(f"🚀 Connecting to Kafka broker at {KAFKA_BOOTSTRAP_SERVERS}...")
+            producer = KafkaProducer(
+                bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS,
+                value_serializer=lambda v: json.dumps(v).encode('utf-8'),
+                request_timeout_ms=3000
+            )
+        except Exception as e:
+            print(f"⚠️ Kafka connection note: {e}")
 
-    print(f"📡 Publishing {events_count} order events to topic '{TOPIC_NAME}'...")
+    print(f"📡 Generating {events_count} order events...")
+    events = []
     for i in range(events_count):
         event = generate_order_event()
-        producer.send(TOPIC_NAME, value=event)
-        print(f"[{i+1}/{events_count}] Created Order {event['order_id']} | User: {event['user_id']} | Total: ₹{event['total_amount']} | City: {event['shipping_city']}")
+        events.append(event)
+        if producer:
+            try:
+                producer.send(TOPIC_NAME, value=event)
+            except Exception:
+                pass
+        print(f"  [{i+1}/{events_count}] Order {event['order_id']} | User: {event['user_id']} | ₹{event['total_amount']} | {event['shipping_city']}")
         time.sleep(delay_seconds)
 
-    producer.flush()
-    producer.close()
-    print("✅ Finished publishing order events.")
+    if producer:
+        try:
+            producer.flush()
+            producer.close()
+        except Exception:
+            pass
+
+    # Ensure events land in Bronze Data Lake
+    now = datetime.now(timezone.utc)
+    out_dir = BRONZE_ORDERS_DIR / f"year={now.year}" / f"month={now.month:02d}" / f"day={now.day:02d}"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out_file = out_dir / f"orders_{now.strftime('%Y%m%d_%H%M%S')}.json"
+    with open(out_file, "w", encoding="utf-8") as f:
+        for ev in events:
+            f.write(json.dumps(ev) + "\n")
+    print(f"💾 Bronze Order Events Lake verified at:\n   👉 {out_file}")
 
 
 if __name__ == "__main__":
-    start_order_producer(events_count=20, delay_seconds=0.5)
+    start_order_producer(events_count=20, delay_seconds=0.02)

@@ -1,0 +1,80 @@
+[
+  {
+    "city": "Mumbai",
+    "latitude": 19.076,
+    "longitude": 72.8777,
+    "temperature_celsius": 27.7,
+    "apparent_temperature_celsius": 33.0,
+    "humidity_percentage": 81,
+    "precipitation_mm": 0.0,
+    "rain_mm": 0.0,
+    "wind_speed_kmh": 6.4,
+    "weather_code": 2,
+    "ingested_at": "2026-09-16T14:22:22.477897+00:00"
+  },
+  {
+    "city": "Bengaluru",
+    "latitude": 12.9716,
+    "longitude": 77.5946,
+    "temperature_celsius": 26.9,
+    "apparent_temperature_celsius": 29.9,
+    "humidity_percentage": 63,
+    "precipitation_mm": 0.0,
+    "rain_mm": 0.0,
+    "wind_speed_kmh": 3.3,
+    "weather_code": 1,
+    "ingested_at": "2026-09-16T14:22:23.104926+00:00"
+  },
+  {
+    "city": "Delhi",
+    "latitude": 28.6139,
+    "longitude": 77.209,
+    "temperature_celsius": 31.2,
+    "apparent_temperature_celsius": 36.6,
+    "humidity_percentage": 64,
+    "precipitation_mm": 0.0,
+    "rain_mm": 0.0,
+    "wind_speed_kmh": 3.1,
+    "weather_code": 0,
+    "ingested_at": "2026-09-16T14:22:23.680822+00:00"
+  },
+  {
+    "city": "Hyderabad",
+    "latitude": 17.385,
+    "longitude": 78.4867,
+    "temperature_celsius": 30.5,
+    "apparent_temperature_celsius": 32.6,
+    "humidity_percentage": 48,
+    "precipitation_mm": 0.0,
+    "rain_mm": 0.0,
+    "wind_speed_kmh": 6.4,
+    "weather_code": 0,
+    "ingested_at": "2026-09-16T14:22:24.364816+00:00"
+  },
+  {
+    "city": "Chennai",
+    "latitude": 13.0827,
+    "longitude": 80.2707,
+    "temperature_celsius": 29.5,
+    "apparent_temperature_celsius": 35.3,
+    "humidity_percentage": 81,
+    "precipitation_mm": 0.0,
+    "rain_mm": 0.0,
+    "wind_speed_kmh": 9.9,
+    "weather_code": 3,
+    "ingested_at": "2026-09-16T14:22:24.957814+00:00"
+  },
+  {
+    "city": "Pune",
+    "latitude": 18.5204,
+    "longitude": 73.8567,
+    "temperature_celsius": 24.2,
+    "apparent_temperature_celsius": 27.4,
+    "humidity_percentage": 86,
+    "precipitation_mm": 0.0,
+    "rain_mm": 0.0,
+    "wind_speed_kmh": 10.1,
+    "weather_code": 1,
+    "ingested_at": "2026-09-16T14:22:25.532764+00:00"
+  }
+]
