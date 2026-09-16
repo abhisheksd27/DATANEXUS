@@ -56,12 +56,10 @@ def ingest_all_cities():
 
     # Partition by Year / Month / Day
     now = datetime.now(timezone.utc)
-    partition_path = BRONZE_DIR / "api" / "weather" / f"year={now.year}" / f"month={now.month:02d}" / f"day={now.day:02d}"
-    partition_path.mkdir(parents=True, exist_ok=True)
-
-    output_file = partition_path / f"weather_{now.strftime('%Y%m%d_%H%M%S')}.json"
-    with open(output_file, "w", encoding="utf-8") as f:
-        json.dump(all_weather_data, f, indent=2)
+    rel_path = Path("api") / "weather" / f"year={now.year}" / f"month={now.month:02d}" / f"day={now.day:02d}" / f"weather_{now.strftime('%Y%m%d_%H%M%S')}.json"
+    
+    from config import save_json_payload
+    output_file = save_json_payload(all_weather_data, rel_path)
 
     print(f"💾 Raw weather data successfully written to Bronze Data Lake:\n   👉 {output_file}")
     return output_file

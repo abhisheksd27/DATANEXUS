@@ -38,12 +38,10 @@ def fetch_exchange_rates():
 
     # Partition by Year / Month / Day
     now = datetime.now(timezone.utc)
-    partition_path = BRONZE_DIR / "api" / "exchange_rates" / f"year={now.year}" / f"month={now.month:02d}" / f"day={now.day:02d}"
-    partition_path.mkdir(parents=True, exist_ok=True)
-
-    output_file = partition_path / f"rates_{now.strftime('%Y%m%d_%H%M%S')}.json"
-    with open(output_file, "w", encoding="utf-8") as f:
-        json.dump(record, f, indent=2)
+    rel_path = Path("api") / "exchange_rates" / f"year={now.year}" / f"month={now.month:02d}" / f"day={now.day:02d}" / f"rates_{now.strftime('%Y%m%d_%H%M%S')}.json"
+    
+    from config import save_json_payload
+    output_file = save_json_payload(record, rel_path)
 
     print(f"  ✅ 1 USD = ₹{record['inr_per_usd']} INR")
     print(f"💾 Raw exchange rates successfully written to Bronze Data Lake:\n   👉 {output_file}")

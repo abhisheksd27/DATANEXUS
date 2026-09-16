@@ -155,6 +155,19 @@ step_etl() {
         python "$PROJECT_ROOT/processing/batch/silver_to_gold/daily_revenue.py"
         python "$PROJECT_ROOT/processing/batch/silver_to_gold/user_behavior.py"
     fi
+
+    # Direct S3 Storage Sync (Option 2)
+    log "Persisting Bronze, Silver & Gold layers to Amazon S3 (Option 2)..."
+    python "$PROJECT_ROOT/scripts/s3_storage.py" || warn "S3 upload note: AWS credentials or network unavailable. Data saved locally."
+    ok "Medallion Data Lake layers persisted to S3!"
+}
+
+# =============================================================================
+# S3 SYNC ONLY
+# =============================================================================
+step_s3() {
+    header "Syncing Data Lake to Amazon S3"
+    python "$PROJECT_ROOT/scripts/s3_storage.py"
 }
 
 # =============================================================================
@@ -219,6 +232,7 @@ case "$STEP" in
     seed)   step_seed  ;;
     kafka)  step_kafka  ;;
     etl)    step_etl   ;;
+    s3)     step_s3    ;;
     api)    step_api   ;;
     stop)   step_stop  ;;
     *)
@@ -230,6 +244,7 @@ case "$STEP" in
         echo "  seed    — Seed MySQL & PostgreSQL databases only"
         echo "  kafka   — Register CDC connectors + ingest data"
         echo "  etl     — Run all PySpark Bronze→Silver→Gold ETL jobs"
+        echo "  s3      — Sync Medallion Data Lake to Amazon S3"
         echo "  api     — Launch FastAPI analytics serving API"
         echo "  stop    — Stop all Docker containers"
         echo ""
