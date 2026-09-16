@@ -1,0 +1,201 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 820" width="100%" height="100%" style="background:#0b132b; font-family:'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;">
+  <defs>
+    <linearGradient id="grad-title" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4cc9f0" />
+      <stop offset="50%" stop-color="#7209b7" />
+      <stop offset="100%" stop-color="#f72585" />
+    </linearGradient>
+    <linearGradient id="grad-source" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <linearGradient id="grad-kafka" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#231F20" />
+      <stop offset="100%" stop-color="#141414" />
+    </linearGradient>
+    <linearGradient id="grad-spark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e25a1c" />
+      <stop offset="100%" stop-color="#9a3412" />
+    </linearGradient>
+    <linearGradient id="grad-bronze" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#b45309" />
+      <stop offset="100%" stop-color="#78350f" />
+    </linearGradient>
+    <linearGradient id="grad-silver" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#64748b" />
+      <stop offset="100%" stop-color="#334155" />
+    </linearGradient>
+    <linearGradient id="grad-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#eab308" />
+      <stop offset="100%" stop-color="#a16207" />
+    </linearGradient>
+    <linearGradient id="grad-dwh" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#0369a1" />
+    </linearGradient>
+    <linearGradient id="grad-api" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#047857" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Title Header -->
+  <text x="600" y="45" text-anchor="middle" font-size="26" font-weight="900" fill="url(#grad-title)" letter-spacing="2">DATANEXUS ARCHITECTURE DIAGRAM</text>
+  <text x="600" y="70" text-anchor="middle" font-size="13" fill="#94a3b8">Enterprise Real-Time E-Commerce Intelligence Platform</text>
+
+  <!-- LAYER 1: DATA SOURCES -->
+  <rect x="50" y="95" width="1100" height="95" rx="12" fill="#111c44" stroke="#1e293b" stroke-width="1.5" />
+  <text x="70" y="120" font-size="12" font-weight="700" fill="#38bdf8" letter-spacing="1">1. MULTI-MODAL DATA SOURCES LAYER</text>
+
+  <!-- MySQL -->
+  <rect x="80" y="130" width="220" height="48" rx="8" fill="#1e293b" stroke="#3b82f6" stroke-width="1.5" />
+  <circle cx="102" cy="154" r="12" fill="#3b82f6" />
+  <text x="102" y="159" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">🐬</text>
+  <text x="122" y="148" font-size="12" font-weight="bold" fill="#ffffff">MySQL 8.0 (OLTP)</text>
+  <text x="122" y="165" font-size="10" fill="#94a3b8">Orders, Order Items, Payments</text>
+
+  <!-- PostgreSQL -->
+  <rect x="330" y="130" width="220" height="48" rx="8" fill="#1e293b" stroke="#60a5fa" stroke-width="1.5" />
+  <circle cx="352" cy="154" r="12" fill="#2563eb" />
+  <text x="352" y="159" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">🐘</text>
+  <text x="372" y="148" font-size="12" font-weight="bold" fill="#ffffff">PostgreSQL 15 (OLTP)</text>
+  <text x="372" y="165" font-size="10" fill="#94a3b8">Users, Demographics, Inventory</text>
+
+  <!-- Clickstream Simulator -->
+  <rect x="580" y="130" width="240" height="48" rx="8" fill="#1e293b" stroke="#ec4899" stroke-width="1.5" />
+  <circle cx="602" cy="154" r="12" fill="#db2777" />
+  <text x="602" y="159" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">⚡</text>
+  <text x="622" y="148" font-size="12" font-weight="bold" fill="#ffffff">Clickstream Producer</text>
+  <text x="622" y="165" font-size="10" fill="#94a3b8">PageViews, Cart, Searches (JSON)</text>
+
+  <!-- External APIs -->
+  <rect x="850" y="130" width="270" height="48" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="1.5" />
+  <circle cx="872" cy="154" r="12" fill="#059669" />
+  <text x="872" y="159" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">🌐</text>
+  <text x="892" y="148" font-size="12" font-weight="bold" fill="#ffffff">External REST APIs</text>
+  <text x="892" y="165" font-size="10" fill="#94a3b8">Open-Meteo Weather &amp; FX Rates</text>
+
+  <!-- DOWN ARROWS LAYER 1 -> LAYER 2 -->
+  <path d="M 190 178 L 190 215" stroke="#f43f5e" stroke-width="2" stroke-dasharray="4" marker-end="url(#arrow)" />
+  <path d="M 440 178 L 440 215" stroke="#f43f5e" stroke-width="2" stroke-dasharray="4" />
+  <path d="M 700 178 L 700 215" stroke="#ec4899" stroke-width="2" />
+  <path d="M 985 178 L 985 365" stroke="#10b981" stroke-width="2" />
+
+  <!-- LAYER 2: INGESTION & MESSAGE STREAMING -->
+  <rect x="50" y="215" width="800" height="100" rx="12" fill="#111c44" stroke="#1e293b" stroke-width="1.5" />
+  <text x="70" y="238" font-size="12" font-weight="700" fill="#f43f5e" letter-spacing="1">2. INGESTION &amp; STREAMING BACKBONE (KAFKA &amp; DEBEZIUM)</text>
+
+  <!-- Debezium Connect -->
+  <rect x="80" y="250" width="230" height="50" rx="8" fill="#1e293b" stroke="#f43f5e" stroke-width="1.5" />
+  <text x="100" y="270" font-size="12" font-weight="bold" fill="#f43f5e">Debezium CDC (Port 8083)</text>
+  <text x="100" y="287" font-size="10" fill="#94a3b8">Tails binlog (MySQL) &amp; WAL (PG)</text>
+
+  <!-- Kafka Broker -->
+  <rect x="350" y="250" width="470" height="50" rx="8" fill="#1e293b" stroke="#ec4899" stroke-width="1.5" />
+  <text x="370" y="270" font-size="12" font-weight="bold" fill="#ec4899">Apache Kafka 7.5 Cluster (Port 9092) + Zookeeper</text>
+  <text x="370" y="287" font-size="10" fill="#cbd5e1">Topics: cdc.mysql.orders | cdc.postgres.users | clickstream_events | order_events</text>
+
+  <!-- Connect Debezium -> Kafka -->
+  <path d="M 310 275 L 350 275" stroke="#f43f5e" stroke-width="2" />
+
+  <!-- DOWN ARROW LAYER 2 -> LAYER 3 -->
+  <path d="M 585 300 L 585 340" stroke="#fb923c" stroke-width="2.5" />
+
+  <!-- LAYER 3: DISTRIBUTED COMPUTE (SPARK) -->
+  <rect x="50" y="340" width="800" height="95" rx="12" fill="#111c44" stroke="#1e293b" stroke-width="1.5" />
+  <text x="70" y="363" font-size="12" font-weight="700" fill="#fb923c" letter-spacing="1">3. DISTRIBUTED COMPUTE ENGINE (APACHE SPARK 3.5)</text>
+
+  <!-- Spark Structured Streaming -->
+  <rect x="80" y="375" width="350" height="48" rx="8" fill="#1e293b" stroke="#fb923c" stroke-width="1.5" />
+  <text x="100" y="395" font-size="12" font-weight="bold" fill="#fb923c">Spark Structured Streaming</text>
+  <text x="100" y="412" font-size="10" fill="#94a3b8">10s micro-batch Kafka ingest to Bronze Lake</text>
+
+  <!-- PySpark Batch ETL -->
+  <rect x="460" y="375" width="360" height="48" rx="8" fill="#1e293b" stroke="#f97316" stroke-width="1.5" />
+  <text x="480" y="395" font-size="12" font-weight="bold" fill="#f97316">PySpark Batch ETL Engines</text>
+  <text x="480" y="412" font-size="10" fill="#94a3b8">Bronze ➔ Silver (Cleanse) | Silver ➔ Gold (Joins)</text>
+
+  <!-- DOWN ARROW LAYER 3 -> LAYER 4 -->
+  <path d="M 255 423 L 255 465" stroke="#eab308" stroke-width="2" />
+  <path d="M 640 423 L 640 465" stroke="#eab308" stroke-width="2" />
+
+  <!-- LAYER 4: MEDALLION DATA LAKE -->
+  <rect x="50" y="465" width="1100" height="110" rx="12" fill="#111c44" stroke="#1e293b" stroke-width="1.5" />
+  <text x="70" y="488" font-size="12" font-weight="700" fill="#eab308" letter-spacing="1">4. MEDALLION DATA LAKE ARCHITECTURE (Amazon S3 / GCS / Local Delta)</text>
+
+  <!-- Bronze Zone -->
+  <rect x="80" y="500" width="320" height="60" rx="8" fill="#1e293b" stroke="#d97706" stroke-width="1.5" />
+  <circle cx="102" cy="520" r="10" fill="#d97706" />
+  <text x="102" y="524" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle">B</text>
+  <text x="122" y="520" font-size="12" font-weight="bold" fill="#f59e0b">BRONZE ZONE (Raw / Immutable)</text>
+  <text x="122" y="536" font-size="10" fill="#cbd5e1">Raw JSON: /mysql, /postgres, /kafka, /api</text>
+  <text x="122" y="550" font-size="9" fill="#94a3b8">Partitioned: year=YYYY/month=MM/day=DD</text>
+
+  <!-- Silver Zone -->
+  <rect x="440" y="500" width="320" height="60" rx="8" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5" />
+  <circle cx="462" cy="520" r="10" fill="#64748b" />
+  <text x="462" y="524" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle">S</text>
+  <text x="482" y="520" font-size="12" font-weight="bold" fill="#e2e8f0">SILVER ZONE (Cleansed / Parquet)</text>
+  <text x="482" y="536" font-size="10" fill="#cbd5e1">Deduplicated, typed, null-handled tables</text>
+  <text x="482" y="550" font-size="9" fill="#94a3b8">Datasets: orders (by city), users, inventory</text>
+
+  <!-- Gold Zone -->
+  <rect x="800" y="500" width="320" height="60" rx="8" fill="#1e293b" stroke="#eab308" stroke-width="1.5" />
+  <circle cx="822" cy="520" r="10" fill="#eab308" />
+  <text x="822" y="524" font-size="11" font-weight="bold" fill="#000000" text-anchor="middle">G</text>
+  <text x="842" y="520" font-size="12" font-weight="bold" fill="#facc15">GOLD ZONE (Business Aggregates)</text>
+  <text x="842" y="536" font-size="10" fill="#cbd5e1">Star-schema tables &amp; domain analytics</text>
+  <text x="842" y="550" font-size="9" fill="#94a3b8">Datasets: daily_revenue, user_behavior</text>
+
+  <!-- Arrows Bronze -> Silver -> Gold -->
+  <path d="M 400 530 L 440 530" stroke="#f59e0b" stroke-width="2" />
+  <path d="M 760 530 L 800 530" stroke="#e2e8f0" stroke-width="2" />
+
+  <!-- DOWN ARROW LAYER 4 -> LAYER 5 -->
+  <path d="M 960 560 L 960 605" stroke="#38bdf8" stroke-width="2.5" />
+
+  <!-- LAYER 5: WAREHOUSE & QUALITY -->
+  <rect x="50" y="605" width="1100" height="90" rx="12" fill="#111c44" stroke="#1e293b" stroke-width="1.5" />
+  <text x="70" y="628" font-size="12" font-weight="700" fill="#38bdf8" letter-spacing="1">5. DATA WAREHOUSE &amp; QUALITY LAYER (dbt + ATHENA / BIGQUERY + GREAT EXPECTATIONS)</text>
+
+  <!-- dbt models -->
+  <rect x="80" y="640" width="340" height="42" rx="8" fill="#1e293b" stroke="#f97316" stroke-width="1.5" />
+  <text x="95" y="658" font-size="11" font-weight="bold" fill="#f97316">dbt ELT Transformation Models</text>
+  <text x="95" y="673" font-size="9.5" fill="#cbd5e1">stg_orders, stg_users ➔ fact_orders, dim_users</text>
+
+  <!-- Data Warehouse -->
+  <rect x="450" y="640" width="340" height="42" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5" />
+  <text x="465" y="658" font-size="11" font-weight="bold" fill="#38bdf8">Cloud OLAP Warehouse</text>
+  <text x="465" y="673" font-size="9.5" fill="#cbd5e1">AWS Glue + Athena Workgroup &amp; Google BigQuery</text>
+
+  <!-- Great Expectations -->
+  <rect x="820" y="640" width="300" height="42" rx="8" fill="#1e293b" stroke="#a855f7" stroke-width="1.5" />
+  <text x="835" y="658" font-size="11" font-weight="bold" fill="#c084fc">Great Expectations Quality Gates</text>
+  <text x="835" y="673" font-size="9.5" fill="#cbd5e1">Automated validation on Bronze/Silver boundaries</text>
+
+  <!-- DOWN ARROW LAYER 5 -> LAYER 6 -->
+  <path d="M 600 695 L 600 730" stroke="#10b981" stroke-width="2" />
+
+  <!-- LAYER 6: SERVING & OBSERVABILITY -->
+  <rect x="50" y="730" width="1100" height="75" rx="12" fill="#111c44" stroke="#1e293b" stroke-width="1.5" />
+  <text x="70" y="750" font-size="11" font-weight="700" fill="#10b981" letter-spacing="1">6. SERVING, ORCHESTRATION &amp; OBSERVABILITY</text>
+
+  <!-- FastAPI -->
+  <rect x="80" y="760" width="320" height="36" rx="6" fill="#1e293b" stroke="#10b981" stroke-width="1.5" />
+  <text x="95" y="776" font-size="11" font-weight="bold" fill="#34d399">FastAPI REST Microservice (Port 8000)</text>
+  <text x="95" y="789" font-size="9" fill="#94a3b8">/api/v1/revenue/daily, /by-city, /products/trending</text>
+
+  <!-- Airflow DAGs -->
+  <rect x="440" y="760" width="320" height="36" rx="6" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5" />
+  <text x="455" y="776" font-size="11" font-weight="bold" fill="#38bdf8">Apache Airflow DAGs</text>
+  <text x="455" y="789" font-size="9" fill="#94a3b8">daily_etl_pipeline, api_ingestion_dag, dbt_run_dag</text>
+
+  <!-- Grafana -->
+  <rect x="800" y="760" width="320" height="36" rx="6" fill="#1e293b" stroke="#f59e0b" stroke-width="1.5" />
+  <text x="815" y="776" font-size="11" font-weight="bold" fill="#fbbf24">Grafana 10.x Dashboards &amp; Looker</text>
+  <text x="815" y="789" font-size="9" fill="#94a3b8">Pipeline Lag, DAG success rate, Revenue KPIs</text>
+</svg>

@@ -1,0 +1,122 @@
+version: 2
+
+sources:
+  - name: datanexus_raw
+    database: datanexus-506318
+    schema: datanexus_raw
+    tables:
+      - name: orders
+        description: "Raw orders data ingested from the source system."
+        columns:
+          - name: order_id
+            description: "Primary key for orders."
+            tests:
+              - not_null
+              - unique
+          - name: total_amount
+            description: "Total monetary value of the order."
+            tests:
+              - not_null
+
+      - name: users
+        description: "Raw users data ingested from the source system."
+        columns:
+          - name: user_id
+            description: "Primary key for users."
+            tests:
+              - not_null
+              - unique
+          - name: email
+            description: "User email address."
+            tests:
+              - not_null
+
+models:
+  - name: stg_orders
+    description: "Staging model for orders: cast, filtered, and enriched with a surrogate key."
+    columns:
+      - name: order_id
+        description: "Natural key for orders, cast to STRING."
+        tests:
+          - not_null
+          - unique
+      - name: order_surrogate_key
+        description: "MD5 surrogate key derived from order_id."
+        tests:
+          - not_null
+          - unique
+      - name: total_amount
+        description: "Order total amount, must be positive."
+        tests:
+          - not_null
+      - name: user_id
+        description: "Foreign key to users."
+        tests:
+          - not_null
+
+  - name: stg_users
+    description: "Staging model for users: cast, filtered, and normalized email."
+    columns:
+      - name: user_id
+        description: "Primary key for users, cast to STRING."
+        tests:
+          - not_null
+          - unique
+      - name: email
+        description: "Raw user email."
+        tests:
+          - not_null
+      - name: email_normalized
+        description: "Lowercased email for consistent matching."
+        tests:
+          - not_null
+
+  - name: fact_orders
+    description: "Fact table joining orders and users at order grain."
+    columns:
+      - name: order_id
+        description: "Primary key for the fact table."
+        tests:
+          - not_null
+          - unique
+      - name: user_id
+        description: "Foreign key to dim_users."
+        tests:
+          - not_null
+      - name: total_amount
+        description: "Order total amount."
+        tests:
+          - not_null
+      - name: order_date
+        description: "Date portion of created_at."
+        tests:
+          - not_null
+
+  - name: dim_users
+    description: "User dimension table with enriched signup metrics."
+    columns:
+      - name: user_id
+        description: "Primary key for the dimension."
+        tests:
+          - not_null
+          - unique
+      - name: email_normalized
+        description: "Lowercased email."
+        tests:
+          - not_null
+
+  - name: agg_daily_revenue
+    description: "Daily revenue aggregation grouped by order_date and city."
+    columns:
+      - name: order_date
+        description: "The date of aggregation."
+        tests:
+          - not_null
+      - name: total_revenue
+        description: "Sum of total_amount for the day and city."
+        tests:
+          - not_null
+      - name: total_orders
+        description: "Count of all orders for the day and city."
+        tests:
+          - not_null

@@ -1,0 +1,75 @@
+# ==============================================================================
+# Great Expectations Checkpoint: orders_checkpoint
+# ------------------------------------------------------------------------------
+# Purpose : Validate the Silver zone orders table against orders_suite.
+#           Run this checkpoint at the Bronze->Silver zone boundary before
+#           any downstream Spark Silver->Gold jobs consume the data.
+#
+# Usage   : great_expectations checkpoint run orders_checkpoint
+# ==============================================================================
+
+name: orders_checkpoint
+config_version: 1.0
+template_name: ~
+module_name: great_expectations.checkpoint
+class_name: Checkpoint
+run_name_template: "%Y%m%d-%H%M%S-orders-checkpoint"
+expectation_suite_name: orders_suite
+batch_request: ~
+
+# ------------------------------------------------------------------------------
+# Action list – executed in order after each validation batch.
+# ------------------------------------------------------------------------------
+action_list:
+
+  # 1. Persist the ValidationResult to the configured results store
+  #    (local filesystem by default; swap to S3/GCS in production).
+  - name: store_validation_result
+    action:
+      class_name: StoreValidationResultAction
+
+  # 2. Refresh the Data Docs site so the latest results are browsable.
+  - name: update_data_docs
+    action:
+      class_name: UpdateDataDocsAction
+      site_names: []  # empty list -> update all configured sites
+
+  # 3. Send a Slack notification on validation failure.
+  #    Uncomment and configure the webhook URL to enable.
+  # - name: send_slack_notification
+  #   action:
+  #     class_name: SlackNotificationAction
+  #     slack_webhook: "${SLACK_WEBHOOK_URL}"
+  #     notify_on: failure          # options: all | failure | success
+  #     renderer:
+  #       module_name: great_expectations.render.renderer.slack_renderer
+  #       class_name: SlackRenderer
+
+# ------------------------------------------------------------------------------
+# Evaluation parameters (passed at runtime if needed, e.g. date partitions).
+# ------------------------------------------------------------------------------
+evaluation_parameters: {}
+
+# ------------------------------------------------------------------------------
+# Runtime configuration overrides.
+# ------------------------------------------------------------------------------
+runtime_configuration: {}
+
+# ------------------------------------------------------------------------------
+# Validations – each entry pairs a batch_request with an expectation suite.
+# The datasource, data connector, and asset names below must match your
+# great_expectations.yml datasource configuration.
+# ------------------------------------------------------------------------------
+validations:
+  - batch_request:
+      datasource_name: spark_datasource
+      data_connector_name: inferred_data_connector
+      data_asset_name: silver_orders
+      data_connector_query:
+        index: -1  # use the most-recent partition
+    expectation_suite_name: orders_suite
+
+# ------------------------------------------------------------------------------
+# Data Docs sites to update (leave empty to update all configured sites).
+# ------------------------------------------------------------------------------
+site_names: []

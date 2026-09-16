@@ -1,0 +1,68 @@
+{
+  "data_asset_type": null,
+  "expectation_suite_name": "users_suite",
+  "ge_cloud_id": null,
+  "meta": {
+    "great_expectations_version": "0.18.0",
+    "created_by": "datanexus-data-engineering",
+    "created_at": "2025-01-01T00:00:00.000000Z",
+    "notes": "Expectation suite for the Silver zone users table. Validated at the Bronze to Silver boundary."
+  },
+  "expectations": [
+    {
+      "expectation_type": "expect_column_to_exist",
+      "kwargs": { "column": "user_id" },
+      "meta": { "notes": "Primary key column must exist." }
+    },
+    {
+      "expectation_type": "expect_column_to_exist",
+      "kwargs": { "column": "full_name" },
+      "meta": { "notes": "User display name column must exist." }
+    },
+    {
+      "expectation_type": "expect_column_to_exist",
+      "kwargs": { "column": "email" },
+      "meta": { "notes": "User email address column must exist." }
+    },
+    {
+      "expectation_type": "expect_column_to_exist",
+      "kwargs": { "column": "city" },
+      "meta": { "notes": "User home city column must exist." }
+    },
+    {
+      "expectation_type": "expect_column_to_exist",
+      "kwargs": { "column": "signup_date" },
+      "meta": { "notes": "Account creation date column must exist." }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": { "column": "user_id" },
+      "meta": { "notes": "Every row must have a non-null user_id." }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": { "column": "email" },
+      "meta": { "notes": "Email is required for all users." }
+    },
+    {
+      "expectation_type": "expect_column_values_to_match_regex",
+      "kwargs": {
+        "column": "email",
+        "regex": "^[a-zA-Z0-9._%+\\-]+@[a-zA-Z0-9.\\-]+\\.[a-zA-Z]{2,}$",
+        "mostly": 1.0
+      },
+      "meta": { "notes": "Email addresses must conform to a valid RFC-5322-like format." }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_in_set",
+      "kwargs": {
+        "column": "city",
+        "value_set": ["Mumbai", "Bengaluru", "Delhi", "Hyderabad", "Pune", "Chennai"],
+        "mostly": 1.0
+      },
+      "meta": {
+        "notes": "Only the six supported metro cities are valid. Records with other city values indicate a bad source feed."
+      }
+    }
+  ]
+}
