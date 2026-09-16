@@ -46,21 +46,17 @@ def seed_database(num_orders=50):
         status = random.choice(STATUSES)
         order_time = now - timedelta(hours=random.randint(0, 72), minutes=random.randint(0, 59))
 
-        # Select items
+        # Select items and compute total BEFORE any inserts
         selected_prods = random.sample(PRODUCTS, k=random.randint(1, 3))
         total_amount = 0.0
+        items_to_insert = []
 
         for prod_id, price in selected_prods:
             qty = random.randint(1, 3)
             total_amount += price * qty
-            cursor.execute(
-                """
-                INSERT INTO order_items (item_id, order_id, product_id, quantity, price, created_at)
-                VALUES (%s, %s, %s, %s, %s, %s)
-                """,
-                (f"itm-{uuid.uuid4().hex[:8]}", order_id, prod_id, qty, price, order_time)
-            )
+            items_to_insert.append((f"itm-{uuid.uuid4().hex[:8]}", order_id, prod_id, qty, price, order_time))
 
+        # 1. Insert into orders FIRST (parent table)
         cursor.execute(
             """
             INSERT INTO orders (order_id, user_id, total_amount, status, city, created_at)
@@ -68,6 +64,16 @@ def seed_database(num_orders=50):
             """,
             (order_id, user_id, round(total_amount, 2), status, city, order_time)
         )
+
+        # 2. Insert order_items AFTER orders exists (child table with FK)
+        for item in items_to_insert:
+            cursor.execute(
+                """
+                INSERT INTO order_items (item_id, order_id, product_id, quantity, price, created_at)
+                VALUES (%s, %s, %s, %s, %s, %s)
+                """,
+                item
+            )
 
         cursor.execute(
             """

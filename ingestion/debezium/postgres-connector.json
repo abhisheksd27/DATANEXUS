@@ -8,11 +8,14 @@
     "database.user": "postgres",
     "database.password": "postgrespassword",
     "database.dbname": "users_db",
+    "database.server.name": "cdc.postgres",
     "topic.prefix": "cdc.postgres",
     "table.include.list": "public.users,public.inventory",
     "plugin.name": "pgoutput",
     "slot.name": "debezium_users_slot",
     "publication.autocreate.mode": "filtered",
-    "decimal.handling.mode": "double"
+    "decimal.handling.mode": "double",
+    "schema.history.internal.kafka.bootstrap.servers": "kafka:29092",
+    "schema.history.internal.kafka.topic": "schema-changes.postgres.users"
   }
 }
