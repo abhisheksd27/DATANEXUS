@@ -17,7 +17,14 @@ from pyspark.sql.functions import (
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger("UserBehaviorGold")
 
-PROJECT_ROOT = Path(__file__).resolve().parents[4]
+def _find_root():
+    p = Path(__file__).resolve()
+    for parent in p.parents:
+        if (parent / "datalake").exists() or parent.name.lower() in ("datanexus", "app"):
+            return parent
+    return p.parents[3]
+
+PROJECT_ROOT = _find_root()
 BRONZE_CLICKSTREAM_PATH = str(PROJECT_ROOT / "datalake" / "bronze" / "kafka" / "clickstream")
 GOLD_BEHAVIOR_PATH = str(PROJECT_ROOT / "datalake" / "gold" / "user_behavior")
 

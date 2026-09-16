@@ -124,25 +124,37 @@ step_kafka() {
 step_etl() {
     header "STEP 4: Running PySpark Medallion ETL"
 
-    log "Bronze → Silver: orders_etl.py"
-    python "$PROJECT_ROOT/processing/batch/bronze_to_silver/orders_etl.py"
-    ok "Orders Silver layer complete!"
+    if docker ps --format '{{.Names}}' | grep -q "datanexus-spark-master"; then
+        log "Running PySpark jobs inside Apache Spark Master container (Java 17)..."
+        SPARK_EXEC="docker exec -i datanexus-spark-master /opt/spark/bin/spark-submit"
 
-    log "Bronze → Silver: users_etl.py"
-    python "$PROJECT_ROOT/processing/batch/bronze_to_silver/users_etl.py"
-    ok "Users Silver layer complete!"
+        log "Bronze → Silver: orders_etl.py"
+        $SPARK_EXEC /opt/datanexus/processing/batch/bronze_to_silver/orders_etl.py
+        ok "Orders Silver layer complete!"
 
-    log "Bronze → Silver: inventory_etl.py"
-    python "$PROJECT_ROOT/processing/batch/bronze_to_silver/inventory_etl.py"
-    ok "Inventory Silver layer complete!"
+        log "Bronze → Silver: users_etl.py"
+        $SPARK_EXEC /opt/datanexus/processing/batch/bronze_to_silver/users_etl.py
+        ok "Users Silver layer complete!"
 
-    log "Silver → Gold: daily_revenue.py"
-    python "$PROJECT_ROOT/processing/batch/silver_to_gold/daily_revenue.py"
-    ok "Daily Revenue Gold layer complete!"
+        log "Bronze → Silver: inventory_etl.py"
+        $SPARK_EXEC /opt/datanexus/processing/batch/bronze_to_silver/inventory_etl.py
+        ok "Inventory Silver layer complete!"
 
-    log "Silver → Gold: user_behavior.py"
-    python "$PROJECT_ROOT/processing/batch/silver_to_gold/user_behavior.py"
-    ok "User Behavior Gold layer complete!"
+        log "Silver → Gold: daily_revenue.py"
+        $SPARK_EXEC /opt/datanexus/processing/batch/silver_to_gold/daily_revenue.py
+        ok "Daily Revenue Gold layer complete!"
+
+        log "Silver → Gold: user_behavior.py"
+        $SPARK_EXEC /opt/datanexus/processing/batch/silver_to_gold/user_behavior.py
+        ok "User Behavior Gold layer complete!"
+    else
+        log "Running PySpark jobs locally..."
+        python "$PROJECT_ROOT/processing/batch/bronze_to_silver/orders_etl.py"
+        python "$PROJECT_ROOT/processing/batch/bronze_to_silver/users_etl.py"
+        python "$PROJECT_ROOT/processing/batch/bronze_to_silver/inventory_etl.py"
+        python "$PROJECT_ROOT/processing/batch/silver_to_gold/daily_revenue.py"
+        python "$PROJECT_ROOT/processing/batch/silver_to_gold/user_behavior.py"
+    fi
 }
 
 # =============================================================================

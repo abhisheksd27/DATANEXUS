@@ -18,7 +18,14 @@ from pyspark.sql.functions import (
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger("DailyRevenueGold")
 
-PROJECT_ROOT = Path(__file__).resolve().parents[4]
+def _find_root():
+    p = Path(__file__).resolve()
+    for parent in p.parents:
+        if (parent / "datalake").exists() or parent.name.lower() in ("datanexus", "app"):
+            return parent
+    return p.parents[3]
+
+PROJECT_ROOT = _find_root()
 SILVER_ORDERS_PATH = str(PROJECT_ROOT / "datalake" / "silver" / "orders")
 SILVER_USERS_PATH = str(PROJECT_ROOT / "datalake" / "silver" / "users")
 GOLD_REVENUE_PATH = str(PROJECT_ROOT / "datalake" / "gold" / "daily_revenue")

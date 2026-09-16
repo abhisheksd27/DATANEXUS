@@ -97,6 +97,8 @@ services:
     ports:
       - "8080:8080"
       - "7077:7077"
+    volumes:
+      - ../:/opt/datanexus
     networks:
       - datanexus-net
 
@@ -107,6 +109,8 @@ services:
     depends_on:
       - spark-master
     command: /opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
+    volumes:
+      - ../:/opt/datanexus
     environment:
       - SPARK_WORKER_CORES=2
       - SPARK_WORKER_MEMORY=2g

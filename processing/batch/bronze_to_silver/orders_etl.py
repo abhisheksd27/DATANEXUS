@@ -22,7 +22,14 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger("OrdersETL")
 
 # Paths
-PROJECT_ROOT = Path(__file__).resolve().parents[4]
+def _find_root():
+    p = Path(__file__).resolve()
+    for parent in p.parents:
+        if (parent / "datalake").exists() or parent.name.lower() in ("datanexus", "app"):
+            return parent
+    return p.parents[3]
+
+PROJECT_ROOT = _find_root()
 BRONZE_ORDERS_PATH = str(PROJECT_ROOT / "datalake" / "bronze" / "mysql" / "orders")
 SILVER_ORDERS_PATH = str(PROJECT_ROOT / "datalake" / "silver" / "orders")
 
