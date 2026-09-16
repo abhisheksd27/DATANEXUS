@@ -4,9 +4,14 @@ Fetches current temperature, rain, windspeed, and weather conditions for e-comme
 and stores the raw JSON payload into Bronze Data Lake partitioned by date.
 """
 
+import sys
 import json
 from datetime import datetime, timezone
+from pathlib import Path
 import requests
+
+# Ensure local config can be resolved from any working directory
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 from config import BRONZE_DIR, CITIES_COORDINATES, WEATHER_API_URL
 
 

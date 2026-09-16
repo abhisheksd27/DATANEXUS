@@ -45,16 +45,14 @@ with DAG(
     # ------------------------------------------------------------------
     def _ingest_weather(**context):
         """Wrapper so Airflow can import the ingestor lazily at runtime."""
-        from ingestion.api.weather_ingestor import WeatherIngestor  # noqa: WPS433
+        from ingestion.api_ingestor.weather_ingestor import ingest_all_cities
 
-        ingestor = WeatherIngestor()
-        ingestor.ingest_all_cities()
+        ingest_all_cities()
 
     def _ingest_exchange_rates(**context):
-        from ingestion.api.exchange_rate_ingestor import ExchangeRateIngestor  # noqa: WPS433
+        from ingestion.api_ingestor.exchange_rate_ingestor import fetch_exchange_rates
 
-        ingestor = ExchangeRateIngestor()
-        ingestor.fetch_exchange_rates()
+        fetch_exchange_rates()
 
     ingest_weather = PythonOperator(
         task_id="ingest_weather",

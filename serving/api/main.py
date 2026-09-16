@@ -5,9 +5,14 @@ Exposes real-time business intelligence endpoints, revenue analytics,
 and inventory metrics backed by the DataNexus Data Lake / Warehouse.
 """
 
+import sys
 from datetime import datetime, timezone
+from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+# Ensure routers can be resolved whether run from serving/api or project root
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 from routers import revenue, products
 
 app = FastAPI(

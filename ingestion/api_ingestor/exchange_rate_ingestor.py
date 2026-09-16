@@ -4,9 +4,14 @@ Fetches real-time exchange rates against USD and INR and stores
 raw JSON payloads into the Bronze Data Lake partitioned by date.
 """
 
+import sys
 import json
 from datetime import datetime, timezone
+from pathlib import Path
 import requests
+
+# Ensure local config can be resolved from any working directory
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 from config import BRONZE_DIR, EXCHANGE_RATE_API_URL
 
 
