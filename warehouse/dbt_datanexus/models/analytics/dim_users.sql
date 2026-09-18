@@ -7,7 +7,7 @@ WITH users AS (
         signup_date
     FROM {{ ref('stg_users') }}
 )
-
+  
 SELECT
     user_id,
     full_name,
