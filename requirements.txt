@@ -3,6 +3,8 @@ pyspark==3.5.0
 kafka-python>=2.0.2
 requests>=2.31.0
 apache-airflow>=2.8.0
+
+
 dbt-bigquery>=1.7.0
 great-expectations>=0.18.0
 fastapi>=0.110.0
